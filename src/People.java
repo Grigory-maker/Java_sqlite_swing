@@ -27,7 +27,7 @@ public class People {
     // Выводим информацию
     @Override
     public String toString() {
-        return String.format("ID: %s | first_name: %s | last_name: %s | patronymic: %s| birthday: %s| sex: %s",
+        return String.format("%s | %s |  %s |  %s|  %s| %s",
                 this.id, this.first_name, this.last_name, this.patronymic,this.birthday,this.sex);
     }
 }
