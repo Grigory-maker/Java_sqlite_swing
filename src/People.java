@@ -10,12 +10,12 @@ public class People {
 
     public String  patronymic;
 
-    public Date birthday;
+    public String birthday;
 
     public String  sex;
 
     // Конструктор
-    public People(int id, String first_name, String  last_name, String  patronymic,Date birthday,String  sex) {
+    public People(int id, String first_name, String  last_name, String  patronymic,String birthday,String  sex) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -27,7 +27,7 @@ public class People {
     // Выводим информацию
     @Override
     public String toString() {
-        return String.format("%s | %s |  %s |  %s|  %s| %s",
-                this.id, this.first_name, this.last_name, this.patronymic,this.birthday,this.sex);
+        return String.format("%s  %s   %s |  %s",
+                 this.first_name, this.last_name, this.patronymic,this.birthday);
     }
 }

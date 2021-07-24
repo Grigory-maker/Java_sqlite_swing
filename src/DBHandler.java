@@ -39,17 +39,19 @@ public class DBHandler {
 
             // В resultSet будет храниться результат нашего запроса,
             // который выполняется командой statement.executeQuery()
-            ResultSet resultSet2 = statement.executeQuery("SELECT id, first_name, last_name, patronymic, birthday, sex FROM people");
+//            ResultSet resultSet2 = statement.executeQuery("SELECT id, first_name, last_name, patronymic, birthday, sex FROM people");
             ResultSet resultSet = statement.executeQuery("SELECT * FROM people;");
 
             // Проходимся по нашему resultSet и заносим данные people
             while (resultSet.next()) {
-                peoples.add(new People(resultSet.getInt("id"),
+                peoples.add(new People(
+                        resultSet.getInt("id"),
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name"),
                         resultSet.getString("patronymic"),
-                        resultSet.getDate("birthday"),
-                        resultSet.getString("sex")));
+                        resultSet.getString("birthday"),
+                        resultSet.getString("sex"))
+                        );
             }
             // Возвращаем наш список
             return peoples;
@@ -65,13 +67,14 @@ public class DBHandler {
     public void addPeople(People people) {
         // Создадим подготовленное выражение, чтобы избежать SQL-инъекций
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "INSERT INTO people(`first_name`, `last_name`, `patronymic`, `birthday`, `sex`) " +
-                        "VALUES(?, ?, ?, ?, ?)")) {
-            statement.setObject(1, people.first_name);
-            statement.setObject(2, people.last_name);
-            statement.setObject(3, people.patronymic);
-            statement.setObject(3, people.birthday);
-            statement.setObject(3, people.sex);
+                "INSERT INTO people(`id`,`first_name`, `last_name`, `patronymic`, `birthday`, `sex`) " +
+                        "VALUES(?, ?, ?, ?, ?, ?)")) {
+            statement.setObject(1, people.id);
+            statement.setObject(2, people.first_name);
+            statement.setObject(3, people.last_name);
+            statement.setObject(4, people.patronymic);
+            statement.setObject(5, people.birthday);
+            statement.setObject(6, people.sex);
             // Выполняем запрос
             statement.execute();
         } catch (SQLException e) {
