@@ -1,20 +1,15 @@
 import org.sqlite.JDBC;
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.Period;
-import java.util.Date;
 
 public class DBHandler {
 
     // Константа, в которой хранится адрес подключения
     private static final String CON_STR = "jdbc:sqlite:bd1.db";
 
-    // Используем шаблон одиночка, чтобы не плодить множество
-    // экземпляров класса DbHandler
     private static DBHandler instance = null;
 
     public static synchronized DBHandler getInstance() throws SQLException {
@@ -35,24 +30,12 @@ public class DBHandler {
     }
     private String getAge(String docDate){
         if (docDate == null) return null;
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
             LocalDate oldDate = LocalDate.parse(docDate,dateFormat);
 
 
             return Integer.toString(Period.between(oldDate, LocalDate.now()).getYears());
-//            long milliseconds = currentDate.getTime() - oldDate.getTime() ;
-////            int years =(int)(milliseconds/(365*24*60*60*1000));
-//            int years =(int)(milliseconds/(31536*1000000));
-//            return Integer.toString(years);
-
-
-
-
-//        return null;
-
-
 
     }
 
@@ -61,16 +44,10 @@ public class DBHandler {
         // Statement используется для того, чтобы выполнить sql-запрос
         try (Statement statement = this.connection.createStatement()) {
 
-            // В данный список будем загружать наши продукты, полученные из БД
             List<String> FLPAge = new ArrayList<String>();
 
-            // В resultSet будет храниться результат нашего запроса,
-            // который выполняется командой statement.executeQuery()
+
             ResultSet resultSet = statement.executeQuery("SELECT id, first_name, last_name, patronymic, birthday FROM people");
-//            ResultSet resultSet = statement.executeQuery("SELECT * FROM people;");
-
-
-            // Проходимся по нашему resultSet и заносим данные people
             try{
                 while (resultSet.next()) {
                 FLPAge.add(new String(
@@ -114,8 +91,6 @@ public class DBHandler {
             e.printStackTrace();
         }
 
-
-
     }
     public void addDocument(Documents doc) {
         // Создадим подготовленное выражение, чтобы избежать SQL-инъекций
@@ -149,12 +124,10 @@ public class DBHandler {
     }
 
 
-
-
 //    // Удаление продукта по id
 //    public void deleteProduct(int id) {
 //        try (PreparedStatement statement = this.connection.prepareStatement(
-//                "DELETE FROM Products WHERE id = ?")) {
+//                "DELETE FROM people WHERE id = ?")) {
 //            statement.setObject(1, id);
 //            // Выполняем запрос
 //            statement.execute();
