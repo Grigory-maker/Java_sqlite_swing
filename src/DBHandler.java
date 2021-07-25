@@ -80,7 +80,33 @@ public class DBHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
+
     }
+    public void addDocument(Documents doc) {
+        // Создадим подготовленное выражение, чтобы избежать SQL-инъекций
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "INSERT INTO documents (id, type_id , people_id , series, number, date)" +
+                        "VALUES(?,?, ?, ?, ?, ?)")) {
+            statement.setObject(1, doc.id);
+
+            statement.setObject(2, doc.type_id);
+            statement.setObject(3, doc.peole_id);
+            statement.setObject(4, doc.series);
+            statement.setObject(5, doc.number);
+            statement.setObject(6, doc.date);
+            // Выполняем запрос
+            statement.execute();
+        } catch (SQLException d) {
+            d.printStackTrace();
+        }
+
+
+
+    }
+
+
 
 //    // Удаление продукта по id
 //    public void deleteProduct(int id) {

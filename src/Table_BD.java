@@ -58,6 +58,13 @@ public class Table_BD {
         JLabel l = new JLabel("id           first_name                                                              last_name                                                                    patronymic                                                            birthday                 sex");
         l.setBounds(10,50,1000,30);
         a.add(l );
+
+        JTextField id = new JTextField("", 5);
+        id.setToolTipText("id");
+        id.setBounds(5,100,20,30);
+        a.add(id);
+
+
         JTextField first_name = new JTextField("Петр", 25);
         first_name.setToolTipText("first name");
         first_name.setBounds(50,100,200,30);
@@ -73,18 +80,8 @@ public class Table_BD {
 
         // Определение маски и поля ввода даты
         SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy");
-// Форматирующий объект даты
-//        DateFormatter dateFormatter = new DateFormatter(date);
-//        dateFormatter.setAllowsInvalid(false);
-//        dateFormatter.setOverwriteMode(true);
-// Создание форматированного текстового поля даты
         JFormattedTextField birthday = new JFormattedTextField(date);
         birthday.setColumns(10);
-//        birthday.setValue(new Date());
-
-//
-//        JTextField birthday = new JTextField("birthday", 10);
-//        birthday.setToolTipText("birthday");
         birthday.setBounds(800,100,80,30);
 
 
@@ -127,7 +124,10 @@ public class Table_BD {
         l2.setBounds(10,250,1000,30);
         a.add(l2);
 
-
+        JTextField iddoc = new JTextField("", 5);
+        iddoc.setToolTipText("id");
+        iddoc.setBounds(5,300,20,30);
+        a.add(iddoc);
 
 
         JTextField series = new JTextField("", 25);
@@ -169,7 +169,9 @@ public class Table_BD {
                 DBHandler dbHandler = DBHandler.getInstance();
 
                 // Добавляем запись
-                dbHandler.addPeople(new People(5, first_name.getText(), last_name.getText(), patronymic.getText(),birthday.getText(),sex.getName()));
+                dbHandler.addPeople(new People(Integer.parseInt(id.getText()), first_name.getText(), last_name.getText(), patronymic.getText(),birthday.getText(),sex.getName()));
+                dbHandler.addDocument(new Documents(Integer.parseInt(iddoc.getText()), document.getSelectedIndex()+1, Integer.parseInt(id.getText()), series.getText(), number.getText(), date3.getText()));
+//                    dbHandler.addDocument(new Documents(1, 1, 5, series.getText(), number.getText(), date3.getText()));
                 // Получаем все записи и выводим их на консоль
 
                 }
