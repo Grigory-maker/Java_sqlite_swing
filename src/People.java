@@ -1,7 +1,7 @@
 
 public class People {
     // Поля класса
-    public int id;
+//    public int id;
 
     public String first_name;
 
@@ -14,8 +14,8 @@ public class People {
     public String  sex;
 
     // Конструктор
-    public People(int id, String first_name, String  last_name, String  patronymic,String birthday,String  sex) {
-        this.id = id;
+    public People(String first_name, String  last_name, String  patronymic,String birthday,String  sex) {
+//        this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.patronymic = patronymic;

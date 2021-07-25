@@ -1,7 +1,12 @@
 import org.sqlite.JDBC;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-
+import java.time.Period;
+import java.util.Date;
 
 public class DBHandler {
 
@@ -28,33 +33,61 @@ public class DBHandler {
         // Выполняем подключение к базе данных
         this.connection = DriverManager.getConnection(CON_STR);
     }
+    private String getAge(String docDate){
+        if (docDate == null) return null;
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    public List<People> getAllPeople() {
+            LocalDate oldDate = LocalDate.parse(docDate,dateFormat);
+
+
+            return Integer.toString(Period.between(oldDate, LocalDate.now()).getYears());
+//            long milliseconds = currentDate.getTime() - oldDate.getTime() ;
+////            int years =(int)(milliseconds/(365*24*60*60*1000));
+//            int years =(int)(milliseconds/(31536*1000000));
+//            return Integer.toString(years);
+
+
+
+
+//        return null;
+
+
+
+    }
+
+    public List<String> getFLPAge() {
 
         // Statement используется для того, чтобы выполнить sql-запрос
         try (Statement statement = this.connection.createStatement()) {
 
             // В данный список будем загружать наши продукты, полученные из БД
-            List<People> peoples = new ArrayList<People>();
+            List<String> FLPAge = new ArrayList<String>();
 
             // В resultSet будет храниться результат нашего запроса,
             // который выполняется командой statement.executeQuery()
-//            ResultSet resultSet2 = statement.executeQuery("SELECT id, first_name, last_name, patronymic, birthday, sex FROM people");
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM people;");
+            ResultSet resultSet = statement.executeQuery("SELECT id, first_name, last_name, patronymic, birthday FROM people");
+//            ResultSet resultSet = statement.executeQuery("SELECT * FROM people;");
+
 
             // Проходимся по нашему resultSet и заносим данные people
-            while (resultSet.next()) {
-                peoples.add(new People(
-                        resultSet.getInt("id"),
-                        resultSet.getString("first_name"),
-                        resultSet.getString("last_name"),
-                        resultSet.getString("patronymic"),
-                        resultSet.getString("birthday"),
-                        resultSet.getString("sex"))
-                        );
+            try{
+                while (resultSet.next()) {
+                FLPAge.add(new String(
+                        resultSet.getString("first_name")+" "+
+                        resultSet.getString("last_name")+" "+
+                        resultSet.getString("patronymic")+" "+
+                        resultSet.getString("birthday")+" "+
+                        getAge(resultSet.getString("birthday"))
+
+                ));
+                }
+            }
+            catch (Exception g){
+                g.printStackTrace();
             }
             // Возвращаем наш список
-            return peoples;
+            return FLPAge;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,14 +100,14 @@ public class DBHandler {
     public void addPeople(People people) {
         // Создадим подготовленное выражение, чтобы избежать SQL-инъекций
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "INSERT INTO people(`id`,`first_name`, `last_name`, `patronymic`, `birthday`, `sex`) " +
-                        "VALUES(?, ?, ?, ?, ?, ?)")) {
-            statement.setObject(1, people.id);
-            statement.setObject(2, people.first_name);
-            statement.setObject(3, people.last_name);
-            statement.setObject(4, people.patronymic);
-            statement.setObject(5, people.birthday);
-            statement.setObject(6, people.sex);
+                "INSERT INTO people(`first_name`, `last_name`, `patronymic`, `birthday`, `sex`) " +
+                        "VALUES(?, ?, ?, ?, ?)")) {
+//            statement.setObject(1, people.id);
+            statement.setObject(1, people.first_name);
+            statement.setObject(2, people.last_name);
+            statement.setObject(3, people.patronymic);
+            statement.setObject(4, people.birthday);
+            statement.setObject(5, people.sex);
             // Выполняем запрос
             statement.execute();
         } catch (SQLException e) {
@@ -102,9 +135,19 @@ public class DBHandler {
             d.printStackTrace();
         }
 
-
-
     }
+    public  String get_people_id() {
+        try (Statement statement = this.connection.createStatement()) {
+//            statement.setObject(1, people.id);
+            // Выполняем запрос
+            return (statement.executeQuery("SELECT id FROM people ORDER BY id DESC LIMIT 1;")).getString("id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "0";
+    }
+
 
 
 

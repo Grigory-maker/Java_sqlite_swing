@@ -4,7 +4,7 @@ public class Documents {
 
     public int type_id;
 
-    public int peole_id;
+    public String peole_id;
 
     public String series;
 
@@ -12,7 +12,7 @@ public class Documents {
 
     public String date;
 
-    public Documents(int id, int type_id, int peole_id, String series, String number, String date) {
+    public Documents(int id, int type_id, String peole_id, String series, String number, String date) {
         this.id = id;
         this.type_id = type_id;
         this.peole_id = peole_id;

@@ -1,5 +1,6 @@
 import java.sql.*;
 import javax.swing.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.sql.SQLException;
 import java.util.List;
@@ -55,14 +56,10 @@ public class Table_BD {
 
 
         JFrame a = new JFrame("example");
-        JLabel l = new JLabel("id           first_name                                                              last_name                                                                    patronymic                                                            birthday                 sex");
+        JLabel l = new JLabel("           first_name                                                              last_name                                                                    patronymic                                                         birthday (01.01.1900)      sex");
         l.setBounds(10,50,1000,30);
         a.add(l );
 
-        JTextField id = new JTextField("", 5);
-        id.setToolTipText("id");
-        id.setBounds(5,100,20,30);
-        a.add(id);
 
 
         JTextField first_name = new JTextField("Петр", 25);
@@ -81,6 +78,7 @@ public class Table_BD {
         // Определение маски и поля ввода даты
         SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy");
         JFormattedTextField birthday = new JFormattedTextField(date);
+
         birthday.setColumns(10);
         birthday.setBounds(800,100,80,30);
 
@@ -89,7 +87,7 @@ public class Table_BD {
 
         final String[] sexdata = { "M" ,"F"};
         JComboBox sex = new JComboBox(sexdata);
-        sex.setBounds(900,100,50,30);
+        sex.setBounds(940,100,50,30);
         a.add(sex);
         String[] type_documentF = { "Паспорт" ,"Снилс", "ИНН"};
         String[] type_documentM = { "Паспорт" ,"Снилс", "ИНН", "Военный Билет"};
@@ -111,12 +109,6 @@ public class Table_BD {
                     v.printStackTrace();
                 }
 
-//                if (sex.getName() == "M") {
-//                    document.addItem("Военный Билет");
-//                }
-//                else {
-//                     document.removeItem("Военный Билет");
-//                }
             }
         });
 
@@ -126,7 +118,7 @@ public class Table_BD {
 
         JTextField iddoc = new JTextField("", 5);
         iddoc.setToolTipText("id");
-        iddoc.setBounds(5,300,20,30);
+        iddoc.setBounds(15,300,20,30);
         a.add(iddoc);
 
 
@@ -147,19 +139,18 @@ public class Table_BD {
 
         a.add(date3 );
 
-
+//  --------------------------------КНОПКА------------------------------------------------------------------------------------------------------------
         JButton b = new JButton("Добавить");
         b.setBounds(400,700,100,20);
 
         b.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-           //     People man =new People(0, first_name.getText(), last_name.getText(), patronymic.getText(),birthday.getText(),sex.getText());
                 try
                 {
                     Class.forName("org.sqlite.JDBC");
                     Connection co = DriverManager.getConnection("jdbc:sqlite:bd1.db");
-                    System.out.println("ваприварп");
+
                 }
                 catch (Exception q){
                 System.out.println(q.getMessage());
@@ -168,28 +159,36 @@ public class Table_BD {
                 // Создаем экземпляр по работе с БД
                 DBHandler dbHandler = DBHandler.getInstance();
 
-                // Добавляем запись
-                dbHandler.addPeople(new People(Integer.parseInt(id.getText()), first_name.getText(), last_name.getText(), patronymic.getText(),birthday.getText(),sex.getName()));
-                dbHandler.addDocument(new Documents(Integer.parseInt(iddoc.getText()), document.getSelectedIndex()+1, Integer.parseInt(id.getText()), series.getText(), number.getText(), date3.getText()));
-//                    dbHandler.addDocument(new Documents(1, 1, 5, series.getText(), number.getText(), date3.getText()));
-                // Получаем все записи и выводим их на консоль
+                // Добавляем записи
+                dbHandler.addPeople(new People(first_name.getText(), last_name.getText(), patronymic.getText(),birthday.getText(),sex.getName()));
+                String people_id =  dbHandler.get_people_id();
+                dbHandler.addDocument(new Documents(Integer.parseInt(iddoc.getText()), document.getSelectedIndex()+1, people_id, series.getText(), number.getText(), date3.getText()));
+
+                JList<String> listPeople = new JList<String>(dbHandler.getFLPAge().toArray(new String[0]));
+//                listPeople.setBounds(1000,100,300,500);
+                JScrollPane scrollPane = new JScrollPane(listPeople );
+                    scrollPane.setBounds(1000,100,300,500);
+//                a.add(listPeople);
+
+                a.add(scrollPane);
+                a.repaint();
 
                 }
                 catch (SQLException w) {
-                    System.out.println("3");
+                    System.out.println("SQLException w");
                     w.printStackTrace();
                     }
 
 
 
-                System.out.println(first_name.getText());
+
             }
 
 
 
         });
         a.add(b);
-
+//  --------------------------------КНОПКА--Конец----------------------------------------------------------------------------------------------------------
 
         a.setSize(1600,800);
 
@@ -200,6 +199,7 @@ public class Table_BD {
 
 
     }
+
 
 
 }
